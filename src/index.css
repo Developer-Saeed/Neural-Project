@@ -1,10 +1,11 @@
 @import "tailwindcss";
-/* 1. Imports go at the top */
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Orbitron:wght@400;500;700&display=swap');
+/* --- 1. THEME CONFIGURATION (Tailwind v4 Design Tokens) --- */
 @theme {
-  /* Tailwind v4 uses these variables to auto-generate classes like 'font-display' and 'bg-primary' */
+  /* Fonts: Defines font-display utility and base styles */
   --font-display: "Orbitron", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+  /* Colors: Enables bg-primary, text-accent, border-muted, etc. */
   --color-primary: #05070A;
   --color-secondary: #0D1117;
   --color-accent: #00F0FF;
@@ -12,40 +13,35 @@
   --color-text: #E6EDF3;
   --color-muted: #7D8590;
 }
-/* 2. Set your defaults so you don't have to keep typing classes */
+/* --- 2. BASE STYLES & RESETS --- */
 @layer base {
+  :root {
+    /* Fallback Variables for pure CSS usage if needed */
+    --accent-cyan: var(--color-accent);
+    --glow-cyan: rgba(0, 240, 255, 0.3);
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
+    /* Uses Tailwind tokens for consistency */
     @apply bg-primary text-text font-mono;
+    overflow-x: hidden;
+    /* Critical for dark themes: Prevents font aliasing */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  h1, h2, h3, .heading-style {
-    @apply font-display tracking-wider uppercase;
+  /* Ensures Orbitron is used for all headings automatically */
+  h1, h2, h3, .font-display {
+    @apply font-display tracking-wider;
   }
 }
-/* --- Base Styles --- */
-:root {
-  --bg-primary: #05070A;
-  --bg-secondary: #0D1117;
-  --accent-cyan: #00F0FF;
-  --glow-cyan: rgba(0, 240, 255, 0.3);
-}
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-html {
-  scroll-behavior: smooth;
-}
-body {
-  background: var(--bg-primary);
-  color: #E6EDF3;
-  font-family: 'JetBrains Mono', monospace;
-  overflow-x: hidden;
-}
-/* --- Animations (Merged & Refined) --- */
-/* Dynamic Scanline Movement (From Old - Best for Motion) */
+/* --- 3. ANIMATIONS & KEYFRAMES --- */
 @keyframes scanline {
   0% { transform: translateY(-100vh); }
   100% { transform: translateY(100vh); }
@@ -54,7 +50,7 @@ body {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
 }
-/* Improved Flicker (From New - More Realistic Glitch) */
+/* Realistic Glitch Flicker */
 @keyframes flicker {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 
   20%, 24%, 55% { opacity: 0.4; }
@@ -67,43 +63,45 @@ body {
   0%, 100% { transform: translateY(0); opacity: 1; }
   50% { transform: translateY(10px); opacity: 0.5; }
 }
-/* --- Components --- */
-/* The "Signature Brand" Scanline Effect */
-.scanline {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px; /* Thin line for elegance */
-  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-  opacity: 0.5;
-  animation: scanline 3s linear infinite;
-  pointer-events: none;
-  z-index: 1000;
-  box-shadow: 0 0 10px var(--accent-cyan); /* Added glow */
+/* --- 4. COMPONENT & UTILITY CLASSES --- */
+@layer components {
+  /* The "Signature Brand" Scanline Effect */
+  .scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px; 
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    opacity: 0.6;
+    animation: scanline 3s linear infinite;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 0 10px var(--color-accent); 
+  }
+  .scene-container {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden; /* Prevents canvas overflow */
+  }
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .scene-content {
+    position: relative;
+    z-index: 10;
+    pointer-events: none; /* Allows canvas interactions behind text */
+  }
+  /* Restores clicking for buttons/links inside scenes */
+  .scene-content > * {
+    pointer-events: auto;
+  }
 }
-.scene-container {
-  min-height: 100vh;
-  position: relative;
-  overflow: hidden; /* Prevents horizontal scroll on canvas */
-}
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-.scene-content {
-  position: relative;
-  z-index: 10;
-  pointer-events: none; /* Allows clicking through to canvas if needed */
-}
-/* Allows buttons/links inside scene-content to be clicked */
-.scene-content > * {
-  pointer-events: auto;
-}
-/* --- Accessibility (Production Ready) --- */
+/* --- 5. ACCESSIBILITY (Production Ready) --- */
 @media (prefers-reduced-motion: reduce) {
   .scanline { 
     animation: none; 

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useCursor } from '../hooks/useCursor';
-import { distance } from '../utils/helpers';
+import { distance } from '../utils/helper';
 const layers = ['PHYSICAL', 'SOCIAL', 'DATA', 'SIGNAL', 'EDITABLE'];
 
 const Scene3 = ({ active }) => {

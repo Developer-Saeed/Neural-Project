@@ -1,4 +1,4 @@
-import { lerp, distance } from './helpers';
+import { lerp, distance } from './helper';
 export class Node {
   constructor(x, y, radius = 3) {
     this.x = x;

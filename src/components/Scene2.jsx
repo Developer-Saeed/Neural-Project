@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { useCursor } from '../hooks/useCursor';
 import { Node } from '../utils/NodeClass';
-import { distance } from '../utils/helpers';
+import { distance } from '../utils/helper';
 
 const Scene2 = ({ active }) => {
   const canvasRef = useRef(null);

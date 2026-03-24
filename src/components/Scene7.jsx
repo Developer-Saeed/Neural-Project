@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useCursor } from '../hooks/useCursor';
-import { distance, clamp, lerp } from '../utils/helpers';
+import { distance, clamp, lerp } from '../utils/helper';
 import { useAudio } from '../hooks/useAudio';
 const Scene7 = ({ active }) => {
   const canvasRef = useRef(null);

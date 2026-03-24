@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useCursor } from '../hooks/useCursor';
-import { distance, lerp } from '../utils/helpers';
+import { distance, lerp } from '../utils/helper';
 
 const Scene5 = ({ active }) => {
   const canvasRef = useRef(null); const nodesRef = useRef([]); const cursorsRef = useRef([]); const { position } = useCursor();

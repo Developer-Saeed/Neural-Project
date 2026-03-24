@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useCursor } from '../hooks/useCursor';
-import { distance, lerp } from '../utils/helpers';
+import { distance, lerp } from '../utils/helper';
 const clusterLabels = ['MEMORY', 'COMMUNICATION', 'SIMULATION', 'PREDICTION', 'ARCHIVE'];
 
 const Scene6 = ({ active }) => {
