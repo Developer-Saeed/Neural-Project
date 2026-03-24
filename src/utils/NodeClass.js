@@ -10,22 +10,30 @@ export class Node {
     this.vy = 0;
     this.pulsePhase = Math.random() * Math.PI * 2;
     this.glow = 0;
+    this.friction = 0.85; // Physics upgrade
+    this.mass = 1; // Physics upgrade
   }
   update(mouseX, mouseY, influenceRadius = 100) {
     const dist = distance(this.x, this.y, mouseX, mouseY);
+    // Interaction Physics
     if (dist < influenceRadius) {
       const force = (influenceRadius - dist) / influenceRadius;
       const angle = Math.atan2(this.y - mouseY, this.x - mouseX);
-      this.vx += Math.cos(angle) * force * 2;
-      this.vy += Math.sin(angle) * force * 2;
+      const forceX = Math.cos(angle) * force * 2;
+      const forceY = Math.sin(angle) * force * 2;
+      this.vx += forceX / this.mass; // Mass affects movement
+      this.vy += forceY / this.mass;
       this.glow = lerp(this.glow, 1, 0.1);
     } else {
       this.glow = lerp(this.glow, 0, 0.05);
     }
+    // Return to base (Spring Physics)
     this.vx += (this.baseX - this.x) * 0.02;
     this.vy += (this.baseY - this.y) * 0.02;
-    this.vx *= 0.95;
-    this.vy *= 0.95;
+    // Apply Friction
+    this.vx *= this.friction;
+    this.vy *= this.friction;
+
     this.x += this.vx;
     this.y += this.vy;
     this.pulsePhase += 0.05;

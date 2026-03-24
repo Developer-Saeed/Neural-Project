@@ -1,4 +1,3 @@
-// src/hooks/useCursor.js
 import { useState, useEffect, useRef } from 'react';
 export const useCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -20,13 +19,9 @@ export const useCursor = () => {
       lastTime.current = now;
       setPosition({ x, y });
     };
-    // Mouse Events
     const handleMouseMove = (e) => handleMove(e.clientX, e.clientY);
-    // Touch Events (Mobile)
     const handleTouchMove = (e) => {
-      if (e.touches.length > 0) {
-        handleMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
+      if (e.touches.length > 0) handleMove(e.touches[0].clientX, e.touches[0].clientY);
     };
     const handleTouchStart = () => setIsTouching(true);
     const handleTouchEnd = () => setIsTouching(false);

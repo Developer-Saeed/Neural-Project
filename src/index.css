@@ -1,14 +1,27 @@
 @import "tailwindcss";
-/* --- Theme Configuration (Modern Way) --- */
+/* 1. Imports go at the top */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Orbitron:wght@400;500;700&display=swap');
 @theme {
-  --font-family-display: "Orbitron", sans-serif;
-  --font-family-mono: "JetBrains Mono", monospace;
+  /* Tailwind v4 uses these variables to auto-generate classes like 'font-display' and 'bg-primary' */
+  --font-display: "Orbitron", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
   --color-primary: #05070A;
   --color-secondary: #0D1117;
   --color-accent: #00F0FF;
   --color-accent-dim: #00A0AA;
   --color-text: #E6EDF3;
   --color-muted: #7D8590;
+}
+/* 2. Set your defaults so you don't have to keep typing classes */
+@layer base {
+  body {
+    @apply bg-primary text-text font-mono;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, .heading-style {
+    @apply font-display tracking-wider uppercase;
+  }
 }
 /* --- Base Styles --- */
 :root {
@@ -31,7 +44,8 @@ body {
   font-family: 'JetBrains Mono', monospace;
   overflow-x: hidden;
 }
-/* --- Animations --- */
+/* --- Animations (Merged & Refined) --- */
+/* Dynamic Scanline Movement (From Old - Best for Motion) */
 @keyframes scanline {
   0% { transform: translateY(-100vh); }
   100% { transform: translateY(100vh); }
@@ -40,13 +54,10 @@ body {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
 }
+/* Improved Flicker (From New - More Realistic Glitch) */
 @keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.3; }
-  94% { opacity: 1; }
-  96% { opacity: 0.5; }
-  97% { opacity: 1; }
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; } 
+  20%, 24%, 55% { opacity: 0.4; }
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
@@ -57,21 +68,24 @@ body {
   50% { transform: translateY(10px); opacity: 0.5; }
 }
 /* --- Components --- */
+/* The "Signature Brand" Scanline Effect */
 .scanline {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  height: 2px;
+  width: 100%;
+  height: 2px; /* Thin line for elegance */
   background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
   opacity: 0.5;
   animation: scanline 3s linear infinite;
   pointer-events: none;
   z-index: 1000;
+  box-shadow: 0 0 10px var(--accent-cyan); /* Added glow */
 }
 .scene-container {
   min-height: 100vh;
   position: relative;
+  overflow: hidden; /* Prevents horizontal scroll on canvas */
 }
 canvas {
   position: absolute;
@@ -83,12 +97,20 @@ canvas {
 .scene-content {
   position: relative;
   z-index: 10;
-  pointer-events: none;
+  pointer-events: none; /* Allows clicking through to canvas if needed */
 }
+/* Allows buttons/links inside scene-content to be clicked */
 .scene-content > * {
   pointer-events: auto;
 }
+/* --- Accessibility (Production Ready) --- */
 @media (prefers-reduced-motion: reduce) {
-  .scanline { animation: none; opacity: 0; }
-  * { animation: none !important; transition: none !important; }
+  .scanline { 
+    animation: none; 
+    opacity: 0; 
+  }
+  * { 
+    animation: none !important; 
+    transition: none !important; 
+  }
 }
