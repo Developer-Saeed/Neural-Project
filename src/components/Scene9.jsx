@@ -1,0 +1,14 @@
+import { useRef, useEffect } from 'react';
+
+const Scene9 = ({ active }) => {
+  const canvasRef = useRef(null); const particlesRef = useRef([]);
+  useEffect(() => {
+    const canvas = canvasRef.current; if (!canvas) return; const ctx = canvas.getContext('2d'); let animationId; let time = 0;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }; resize(); window.addEventListener('resize', resize);
+    if (particlesRef.current.length === 0) { for (let i = 0; i < 100; i++) particlesRef.current.push({ x: Math.random() * canvas.width, y: canvas.height + Math.random() * 100, vx: (Math.random() - 0.5) * 0.5, vy: -Math.random() * 2 - 0.5, radius: Math.random() * 2 + 1, alpha: Math.random() * 0.5 + 0.3 }); }
+    const draw = () => { time += 0.02; ctx.clearRect(0, 0, canvas.width, canvas.height); const centerX = canvas.width / 2; for (let i = 0; i < 30; i++) { const startX = (i / 30) * canvas.width; ctx.strokeStyle = `rgba(0, 240, 255, ${0.1 + Math.sin(time + i) * 0.05})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(startX, canvas.height); ctx.lineTo(centerX, 0); ctx.stroke(); } const beamGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.3); beamGradient.addColorStop(0, 'rgba(0, 240, 255, 0.3)'); beamGradient.addColorStop(1, 'rgba(0, 240, 255, 0)'); ctx.fillStyle = beamGradient; ctx.fillRect(centerX - 50, 0, 100, canvas.height * 0.3); particlesRef.current.forEach(particle => { particle.x += particle.vx; particle.y += particle.vy; if (particle.y < -10) { particle.y = canvas.height + 10; particle.x = Math.random() * canvas.width; } ctx.fillStyle = `rgba(0, 240, 255, ${particle.alpha})`; ctx.beginPath(); ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2); ctx.fill(); }); const fogGradient = ctx.createRadialGradient(centerX, canvas.height * 0.3, 0, centerX, canvas.height * 0.3, canvas.width * 0.5); fogGradient.addColorStop(0, 'rgba(0, 240, 255, 0.1)'); fogGradient.addColorStop(1, 'rgba(0, 240, 255, 0)'); ctx.fillStyle = fogGradient; ctx.fillRect(0, 0, canvas.width, canvas.height); animationId = requestAnimationFrame(draw); };
+    draw(); return () => { cancelAnimationFrame(animationId); window.removeEventListener('resize', resize); };
+  }, []);
+  return (<div className="scene-container" style={{ background: 'var(--bg-primary)' }}><canvas ref={canvasRef} /><div className="scene-content flex flex-col justify-center items-center min-h-screen px-8"><div className="text-center"><h2 className="font-display text-3xl md:text-5xl text-cyan-400 mb-6" style={{ animation: active ? 'pulse 2s infinite' : 'none', textShadow: '0 0 40px rgba(0, 240, 255, 0.6)' }}>ACCESS LEVEL UPDATED</h2><p className="font-display text-xl md:text-2xl text-cyan-400 opacity-60" style={{ animation: active ? 'fadeIn 1s ease-out 0.5s forwards' : 'none', opacity: 0 }}>YOU ARE NOW MULTI-PRESENCE ENABLED</p></div></div></div>);
+};
+export default Scene9;

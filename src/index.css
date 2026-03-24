@@ -1,0 +1,94 @@
+@import "tailwindcss";
+/* --- Theme Configuration (Modern Way) --- */
+@theme {
+  --font-family-display: "Orbitron", sans-serif;
+  --font-family-mono: "JetBrains Mono", monospace;
+  --color-primary: #05070A;
+  --color-secondary: #0D1117;
+  --color-accent: #00F0FF;
+  --color-accent-dim: #00A0AA;
+  --color-text: #E6EDF3;
+  --color-muted: #7D8590;
+}
+/* --- Base Styles --- */
+:root {
+  --bg-primary: #05070A;
+  --bg-secondary: #0D1117;
+  --accent-cyan: #00F0FF;
+  --glow-cyan: rgba(0, 240, 255, 0.3);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--bg-primary);
+  color: #E6EDF3;
+  font-family: 'JetBrains Mono', monospace;
+  overflow-x: hidden;
+}
+/* --- Animations --- */
+@keyframes scanline {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.3; }
+  94% { opacity: 1; }
+  96% { opacity: 0.5; }
+  97% { opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(10px); opacity: 0.5; }
+}
+/* --- Components --- */
+.scanline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  opacity: 0.5;
+  animation: scanline 3s linear infinite;
+  pointer-events: none;
+  z-index: 1000;
+}
+.scene-container {
+  min-height: 100vh;
+  position: relative;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.scene-content {
+  position: relative;
+  z-index: 10;
+  pointer-events: none;
+}
+.scene-content > * {
+  pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scanline { animation: none; opacity: 0; }
+  * { animation: none !important; transition: none !important; }
+}

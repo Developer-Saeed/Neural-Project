@@ -1,0 +1,17 @@
+import { useRef, useEffect } from 'react';
+import { useCursor } from '../hooks/useCursor';
+import { distance, lerp } from '../utils/helpers';
+const clusterLabels = ['MEMORY', 'COMMUNICATION', 'SIMULATION', 'PREDICTION', 'ARCHIVE'];
+
+const Scene6 = ({ active }) => {
+  const canvasRef = useRef(null); const clustersRef = useRef([]); const { position } = useCursor();
+  useEffect(() => {
+    const canvas = canvasRef.current; if (!canvas) return; const ctx = canvas.getContext('2d'); let animationId; let time = 0;
+    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }; resize(); window.addEventListener('resize', resize);
+    if (clustersRef.current.length === 0) { clusterLabels.forEach((label, i) => { const angle = (i / clusterLabels.length) * Math.PI * 2; const radius = Math.min(canvas.width, canvas.height) * 0.3; const cluster = { x: canvas.width/2 + Math.cos(angle)*radius, y: canvas.height/2 + Math.sin(angle)*radius, label, nodes: [], scale: 1 }; for (let j = 0; j < 15; j++) cluster.nodes.push({ offsetX: (Math.random() - 0.5) * 100, offsetY: (Math.random() - 0.5) * 100, radius: Math.random() * 3 + 2, phase: Math.random() * Math.PI * 2 }); clustersRef.current.push(cluster); }); }
+    const draw = () => { time += 0.02; ctx.clearRect(0, 0, canvas.width, canvas.height); clustersRef.current.forEach((cluster, i) => { const dist = distance(cluster.x, cluster.y, position.x, position.y); const isHovered = dist < 100; cluster.scale = lerp(cluster.scale, isHovered ? 1.2 : 1, 0.1); clustersRef.current.slice(i + 1).forEach(other => { ctx.strokeStyle = 'rgba(0, 240, 255, 0.1)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cluster.x, cluster.y); ctx.lineTo(other.x, other.y); ctx.stroke(); }); const glowRadius = 80 * cluster.scale; const gradient = ctx.createRadialGradient(cluster.x, cluster.y, 0, cluster.x, cluster.y, glowRadius); gradient.addColorStop(0, `rgba(0, 240, 255, ${isHovered ? 0.3 : 0.1})`); gradient.addColorStop(1, 'rgba(0, 240, 255, 0)'); ctx.fillStyle = gradient; ctx.beginPath(); ctx.arc(cluster.x, cluster.y, glowRadius, 0, Math.PI * 2); ctx.fill(); cluster.nodes.forEach(node => { const nodeX = cluster.x + node.offsetX * cluster.scale; const nodeY = cluster.y + node.offsetY * cluster.scale + Math.sin(time + node.phase) * 5; ctx.fillStyle = `rgba(0, 240, 255, ${isHovered ? 0.8 : 0.4})`; ctx.beginPath(); ctx.arc(nodeX, nodeY, node.radius * cluster.scale, 0, Math.PI * 2); ctx.fill(); }); ctx.font = `${14 * cluster.scale}px "Orbitron"`; ctx.fillStyle = `rgba(0, 240, 255, ${isHovered ? 1 : 0.5})`; ctx.textAlign = 'center'; ctx.fillText(cluster.label, cluster.x, cluster.y - 60 * cluster.scale); }); animationId = requestAnimationFrame(draw); };
+    draw(); return () => { cancelAnimationFrame(animationId); window.removeEventListener('resize', resize); };
+  }, [position]);
+  return (<div className="scene-container" style={{ background: 'var(--bg-primary)' }}><canvas ref={canvasRef} /><div className="scene-content flex flex-col justify-center items-center min-h-screen px-8"><div className="text-center mb-8"><h2 className="font-display text-2xl md:text-4xl text-cyan-400">MULTI-PRESENCE GRID</h2><p className="text-sm text-gray-500 mt-2">Hover clusters to explore neural domains</p></div></div></div>);
+};
+export default Scene6;
